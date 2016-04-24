@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   # root 'welcome#index'
 
   get 'webhook' => 'webhooks#challenge'
+  post 'webhook' => 'webhooks#message'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
