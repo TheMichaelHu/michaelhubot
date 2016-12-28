@@ -1,5 +1,5 @@
 class WebhooksController < ApplicationController
-  @token = 'CAAZA2hSIX2LABAFCYquGFQ5Tz5aJXfTNEuSvdGtZBRkJnoM81F4HzWF0FSMMsbUn5PIboxu0pvqwlYD4RU0bRIJgk6ahR6ulgCzanZA80kClpKlk5eVuqsTUZCBKsZCHGIgrPUPuYuBGXe6dVZCGThAa9ZC2SLZBuuZAtufuTV6rmNUB72yZADZA3e8MvoBZCvuos3gZD'
+  skip_before_filter :verify_authenticity_token, :only => [:message]
   
   def challenge
     if params['hub.verify_token'] == 'michael_hu_bot_is_not_hubot'
@@ -26,8 +26,18 @@ class WebhooksController < ApplicationController
 
   def send_message(recipient, text)
     message_data = {text: text}
-    data = {qs: {access_token: @token},
-            json: {recipient: {id: recipient}, message: message_data}}
-    Net::HTTP.post_form(URI.parse("https://graph.facebook.com/v2.6/me/messages"), data)
+    data = {access_token: 'CAAZA2hSIX2LABAFCYquGFQ5Tz5aJXfTNEuSvdGtZBRkJnoM81F4HzWF0FSMMsbUn5PIboxu0pvqwlYD4RU0bRIJgk6ahR6ulgCzanZA80kClpKlk5eVuqsTUZCBKsZCHGIgrPUPuYuBGXe6dVZCGThAa9ZC2SLZBuuZAtufuTV6rmNUB72yZADZA3e8MvoBZCvuos3gZD',
+      recipient: recipient, message: text}
+    
+    uri = URI.parse("https://graph.facebook.com/v2.6/me/messages")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+    request = Net::HTTP::Post.new(uri.request_uri)
+    request.set_form_data data
+    puts request.body
+    response = http.request(request)
+    puts response.body
   end
 end
