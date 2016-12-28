@@ -35,7 +35,7 @@ class WebhooksController < ApplicationController
 
     request = Net::HTTP::Post.new(uri.request_uri)
     # request.content_type = 'application/json'
-    request.set_form_data data
+    request.body = data
     puts request.body
     response = http.request(request)
     puts response.body
