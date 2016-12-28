@@ -34,6 +34,7 @@ class WebhooksController < ApplicationController
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
     request = Net::HTTP::Post.new(uri.request_uri)
+    request.content_type = 'application/json'
     request.set_form_data data
     puts request.body
     response = http.request(request)
