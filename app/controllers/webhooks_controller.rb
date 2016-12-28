@@ -1,6 +1,5 @@
 class WebhooksController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => [:message]
-  @token = ENV['ACCESS_TOKEN']
 
   def challenge
     if params['hub.verify_token'] == ENV['VERIFY_TOKEN']
@@ -27,7 +26,7 @@ class WebhooksController < ApplicationController
 
   def send_message(recipient, text)
     message_data = {text: text}
-    data = {access_token: @token, recipient: recipient, message: text}
+    data = {access_token: ENV['ACCESS_TOKEN'], recipient: recipient, message: text}
     
     uri = URI.parse("https://graph.facebook.com/v2.6/me/messages")
     http = Net::HTTP.new(uri.host, uri.port)
