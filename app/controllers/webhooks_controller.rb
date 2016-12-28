@@ -26,7 +26,7 @@ class WebhooksController < ApplicationController
 
   def send_message(recipient, text)
     message_data = {text: text}
-    data = {access_token: ENV['ACCESS_TOKEN'], recipient: recipient, message: text}.to_json
+    data = {access_token: ENV['ACCESS_TOKEN'], recipient: recipient, message: text}
     
     uri = URI.parse("https://graph.facebook.com/v2.6/me/messages")
     http = Net::HTTP.new(uri.host, uri.port)
@@ -34,10 +34,10 @@ class WebhooksController < ApplicationController
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
     request = Net::HTTP::Post.new(uri.request_uri)
-    # request.content_type = 'application/json'
-    request.body = data
-    puts request.body
+    request.content_type = 'application/json'
+    request.set_form_data data
+    puts request
     response = http.request(request)
-    puts response.body
+    puts response
   end
 end
