@@ -15,29 +15,10 @@ class WebhooksController < ApplicationController
       sender = event[:sender][:id]
       if event[:message] && event[:message][:text]
         text = event[:message][:text]
-        send_message(sender, text)
+        Listener.handleMessage(sender, text)
       end
     end
 
     head :ok
-  end
-
-  private
-
-  def send_message(recipient, text)
-    message_data = {text: text}
-    data = {recipient: {id: recipient}, message: {text: text}}.to_json
-    
-    uri = URI.parse("https://graph.facebook.com/v2.6/me/messages?access_token=#{ENV['ACCESS_TOKEN']}")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-    request = Net::HTTP::Post.new(uri.request_uri)
-    request.content_type = 'application/json'
-    request.body = data
-    puts request.body
-    response = http.request(request)
-    puts response.body
   end
 end
