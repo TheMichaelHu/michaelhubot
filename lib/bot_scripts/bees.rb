@@ -15,5 +15,7 @@ module Bees
       Sender.send_gif(sender, gifs.sample)
       return true
     end
+    
+    return false
   end
 end
