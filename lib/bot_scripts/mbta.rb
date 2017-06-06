@@ -5,7 +5,7 @@ module MBTA
   include Sender
   
   def self.hear(sender, message)
-    terms = /n..?t ([a-zA-Z]* (?:bus|line)) f..?m ([a-zA-Z ]*)/i.match(message).to_a
+    terms = /n..?t ([a-zA-Z]* (?:bus|line) [a-zA-Z]*) f..?m ([a-zA-Z ]*)/i.match(message).to_a
 
     if terms && terms.length > 2
       parser = MbtaParser.new
@@ -31,14 +31,21 @@ module MBTA
 
         response = JSON.parse(Net::HTTP.get_response(uri).body)
 
-        response.dig(:mode, 0, :route, 0, :direction, direction, :trip, 0, :trip_name)
+        arrival_time = response.dig("mode", 0, "route", 0, "direction", 0, "trip", 0, "sch_arr_dt")
+
+        if arrival_time.nil?
+          ""
+        else
+          time = Time.at(arrival_time.to_i).strftime("%I:%M %p")
+          "#{response["stop_name"]} at #{time}"
+        end
       end
 
       if next_routes.join('').empty?
-        return "No routes available!"
+        return "No routes available for #{response["stop_name"]}!"
       end
 
-      return next_routes.join('\n')
+      return next_routes.join("\n")
     end
 
     private
