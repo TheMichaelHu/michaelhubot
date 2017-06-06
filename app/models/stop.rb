@@ -1,4 +1,4 @@
 class Stop < ActiveRecord::Base
-  has_many :directions
-  has_many :routes, through: :directions
+  belongs_to :route
+  belongs_to :station
 end
