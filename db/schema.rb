@@ -16,24 +16,34 @@ ActiveRecord::Schema.define(version: 20170604145314) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "directions", id: false, force: true do |t|
-    t.integer "route_id"
-    t.integer "stop_id"
-    t.string  "direction_id"
-    t.string  "name"
-  end
-
-  add_index "directions", ["route_id"], name: "index_directions_on_route_id", using: :btree
-  add_index "directions", ["stop_id"], name: "index_directions_on_stop_id", using: :btree
-
   create_table "routes", force: true do |t|
     t.string "route_id"
+    t.string "name"
+    t.string "mode"
+  end
+
+  create_table "routes_stations", id: false, force: true do |t|
+    t.integer "route_id"
+    t.integer "station_id"
+  end
+
+  add_index "routes_stations", ["route_id"], name: "index_routes_stations_on_route_id", using: :btree
+  add_index "routes_stations", ["station_id"], name: "index_routes_stations_on_station_id", using: :btree
+
+  create_table "stations", force: true do |t|
     t.string "name"
   end
 
   create_table "stops", force: true do |t|
-    t.string "stop_id"
-    t.string "name"
+    t.integer "route_id"
+    t.integer "station_id"
+    t.string  "stop_id"
+    t.string  "name"
+    t.string  "direction_id"
+    t.string  "direction_name"
   end
+
+  add_index "stops", ["route_id"], name: "index_stops_on_route_id", using: :btree
+  add_index "stops", ["station_id"], name: "index_stops_on_station_id", using: :btree
 
 end
