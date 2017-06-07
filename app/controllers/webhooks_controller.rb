@@ -15,7 +15,13 @@ class WebhooksController < ApplicationController
       sender = event[:sender][:id]
       if event[:message] && event[:message][:text]
         text = event[:message][:text]
-        Listener.handleMessage(sender, text)
+        Sender.send_typing_action(sender, true)
+
+        if !Listener.handleMessage(sender, text)
+          Help.hear(sender, text)
+        end
+
+        Sender.send_typing_action(sender, false)
       end
     end
 

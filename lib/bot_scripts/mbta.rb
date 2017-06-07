@@ -37,7 +37,7 @@ module MBTA
         if arrival_time.nil?
           "No routes available for #{response["stop_name"]}!"
         else
-          time = Time.at(arrival_time.to_i).strftime("%I:%M %p")
+          time = Time.at(arrival_time.to_i).strftime("%-I:%M %p")
           "#{response["stop_name"]} at #{time}"
         end
       end

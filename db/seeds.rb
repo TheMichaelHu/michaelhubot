@@ -28,9 +28,9 @@ routes["mode"].each do |mode|
       stops_list.each do |stop|
         station_name = stop["stop_name"]
         if mode["mode_name"] == "Subway"
-          station_name = /^([a-zA-Z ]*) - .*$/.match(stop["stop_name"]).to_a.dig(1) || station_name
+          station_name = /^([^-]*) - .*$/.match(stop["stop_name"]).to_a.dig(1) || station_name
         elsif mode["mode_name"] == "Bus"
-          station_name = /^[a-zA-Z ]* @ (.*)$/.match(stop["stop_name"]).to_a.dig(1) || station_name
+          station_name = /^[^@]* @ (.*)$/.match(stop["stop_name"]).to_a.dig(1) || station_name
         end
         station_obj = Station.where(name: station_name).first_or_create
 
@@ -39,3 +39,4 @@ routes["mode"].each do |mode|
     end
   end
 end
+
